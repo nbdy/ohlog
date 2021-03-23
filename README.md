@@ -1,7 +1,7 @@
 # Logger
 ## Usage
 ```c++
-#include "Logger.h"
+#include "ohlog.h"
 
 auto* l = ohlog::Logger::get();
 l->d("This is a log TAG", "This is some debug message");
