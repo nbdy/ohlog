@@ -41,11 +41,20 @@ namespace ohlog {
 
     class Logger {
     public:
+        /*!
+         * get a Logger instance
+         * @return pointer to initialized Logger
+         */
         [[maybe_unused]] static Logger* get() {
-            if(self == nullptr) self = new Logger();
+            if (self == nullptr) self = new Logger();
             return self;
         }
 
+        /*!
+         * get the current timestamp
+         * @param format std::string, the format to use
+         * @return the current timestamp formatted as a string
+         */
         static std::string getCurrentTimestamp(const std::string& format=DEFAULT_FORMAT) {
             std::stringstream o;
             const auto t = std::time(nullptr);
@@ -54,6 +63,14 @@ namespace ohlog {
             return o.str();
         }
 
+        /*!
+         * log to cli
+         * @tparam Args
+         * @param tag std::string, the prefix for the line
+         * @param msg std::string, the message to display
+         * @param level LogLevel, the loglevel
+         * @param arguments
+         */
         template<typename... Args>
         void log(const std::string& tag, const std::string& msg, LogLevel level = INFO, Args... arguments) {
             std::stringstream o;
@@ -72,21 +89,49 @@ namespace ohlog {
             fflush(stdout);
         }
 
+        /*!
+         * shorthand function for log
+         * @tparam Args
+         * @param tag
+         * @param msg
+         * @param arguments
+         */
         template<typename... Args>
         [[maybe_unused]] void d(const std::string& tag, const std::string& msg, Args... arguments) {
             log(tag, msg, DEBUG, arguments...);
         }
 
+        /*!
+         * shorthand function for log
+         * @tparam Args
+         * @param tag
+         * @param msg
+         * @param arguments
+         */
         template<typename... Args>
         [[maybe_unused]] void i(const std::string& tag, const std::string& msg, Args... arguments) {
             log(tag, msg, INFO, arguments...);
         }
 
+        /*!
+         * shorthand function for log
+         * @tparam Args
+         * @param tag
+         * @param msg
+         * @param arguments
+         */
         template<typename... Args>
         [[maybe_unused]] void w(const std::string& tag, const std::string& msg, Args... arguments) {
             log(tag, msg, WARNING, arguments...);
         }
 
+        /*!
+         * shorthand function for log
+         * @tparam Args
+         * @param tag
+         * @param msg
+         * @param arguments
+         */
         template<typename... Args>
         [[maybe_unused]] void e(const std::string& tag, const std::string& msg, Args... arguments) {
             log(tag, msg, ERROR, arguments...);
