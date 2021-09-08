@@ -1,12 +1,34 @@
 #include "ohlog.h"
 
 int main() {
-    auto* l = ohlog::Logger::get();
+  ohlog::Logger::get("log.txt");
+  DLOG("This is some debug message");
+  DLOGA("This is another debug message, %s", "but it has arguments");
+  ILOG("This is a normal info message");
+  ILOGA("This is %i and that is %f", 420, 69.69);
+  WLOG("Oh noes. A warning");
+  WLOGA("A warning %s arguments", "with");
+  ELOG("An error. That's certainly bad");
+  ELOGA("An error %s. That's even %s", "with arguments", "worse");
+  ILOGA("But you could also just %s to a file", "pipe the output");
+  bool doRun = true;
 
-    l->d("This is a log TAG", "This is some debug message");
-    l->i("It also supports printf like formatting", "This is %i and that is %f", 420, 69.69);
-    l->w("It can also be colorful", "As you have %s above", "seen");
-    l->e("I hope you just don't need to log to a file", "But you could also just %s to a file", "pipe the output");
+  std::thread t0([&doRun]() {
+    while(doRun) {
+      DLOG("Logger one here");
+    }
+  });
 
-    return 0;
+  std::thread t1([&doRun]() {
+    while(doRun) {
+      DLOG("Logger two here");
+    }
+  });
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(20));
+  doRun = false;
+  t0.join();
+  t1.join();
+
+  return 0;
 }
