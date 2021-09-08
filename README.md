@@ -21,3 +21,4 @@ I 2021.09.08 01:01:49 main.cpp: But you could also just pipe the output to a fil
 - [X] No external dependencies
 - [X] Logging to file
 - [X] Thread safe
+- [X] Header only
