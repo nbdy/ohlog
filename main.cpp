@@ -14,13 +14,13 @@ int main() {
   bool doRun = true;
 
   std::thread t0([&doRun]() {
-    while(doRun) {
+    while (doRun) {
       DLOG("Logger one here");
     }
   });
 
   std::thread t1([&doRun]() {
-    while(doRun) {
+    while (doRun) {
       DLOG("Logger two here");
     }
   });
