@@ -178,15 +178,6 @@ public:
 
 #define DEFAULT_FORMAT "%Y.%m.%d %H:%M:%S"
 #define GET_FILENAME std::filesystem::path(__FILE__).filename()
-#define OHLOG ohlog::Logger::get()
-#define DLOG(msg) OHLOG->d(GET_FILENAME, msg)
-#define DLOGA(msg, args...) OHLOG->d(GET_FILENAME, msg, args)
-#define ILOG(msg) OHLOG->i(GET_FILENAME, msg)
-#define ILOGA(msg, args...) OHLOG->i(GET_FILENAME, msg, args)
-#define WLOG(msg) OHLOG->w(GET_FILENAME, msg)
-#define WLOGA(msg, args...) OHLOG->w(GET_FILENAME, msg, args)
-#define ELOG(msg) OHLOG->e(GET_FILENAME, msg)
-#define ELOGA(msg, args...) OHLOG->e(GET_FILENAME, msg, args)
 
 namespace ohlog {
 enum LogLevel { DEBUG = 0, INFO, WARNING, ERROR };
@@ -333,5 +324,15 @@ private:
   StrPubSub queue;
 };
 } // namespace ohlog
+
+#define OHLOG ohlog::Logger::get()
+#define DLOG(msg) OHLOG->d(GET_FILENAME, msg)
+#define DLOGA(msg, args...) OHLOG->d(GET_FILENAME, msg, args)
+#define ILOG(msg) OHLOG->i(GET_FILENAME, msg)
+#define ILOGA(msg, args...) OHLOG->i(GET_FILENAME, msg, args)
+#define WLOG(msg) OHLOG->w(GET_FILENAME, msg)
+#define WLOGA(msg, args...) OHLOG->w(GET_FILENAME, msg, args)
+#define ELOG(msg) OHLOG->e(GET_FILENAME, msg)
+#define ELOGA(msg, args...) OHLOG->e(GET_FILENAME, msg, args)
 
 #endif // LOGGER_OHLOG_H
