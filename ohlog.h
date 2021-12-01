@@ -49,6 +49,12 @@ using CallbackMap = std::map<std::string, SubscribeCallback<T>>;
 template <typename T>
 using SubscriptionMap = std::map<std::string, CallbackMap<T>>;
 
+constexpr const char* RESET = "\033[0m";
+constexpr const char* BLUE = "\033[34m";
+constexpr const char* WHITE = "\033[37m";
+constexpr const char* YELLOW = "\033[33m";
+constexpr const char* RED = "\033[31m";
+
 /*!
  * publish subscribe library for inter class communication
  */
@@ -177,7 +183,8 @@ public:
 };
 
 #define DEFAULT_FORMAT "%Y.%m.%d %H:%M:%S"
-#define GET_FILENAME std::filesystem::path(__FILE__).filename()
+#define GET_FILENAME std::filesystem::path(__FILE__).filename().string()
+#define GET_TAG ("[" + std::string(GET_FILENAME) + " L" + std::to_string(__LINE__) + "] " + std::string(__PRETTY_FUNCTION__))
 
 namespace ohlog {
 enum LogLevel { DEBUG = 0, INFO, WARNING, ERROR };
@@ -232,19 +239,20 @@ public:
     std::stringstream o;
     switch (level) {
     case DEBUG:
-      o << "D ";
+      o << BLUE << "D ";
       break;
     case INFO:
-      o << "I ";
+      o << WHITE << "I ";
       break;
     case WARNING:
-      o << "W ";
+      o << YELLOW << "W ";
       break;
     case ERROR:
-      o << "E ";
+      o << RED << "E ";
       break;
     }
-    o << getCurrentTimestamp() << " " << tag << ": " << msg;
+    o << getCurrentTimestamp() << " " << tag << " ";
+    o << ": " << msg << RESET;
     std::string formatStr = o.str();
     int lineLength = snprintf(nullptr, 0, formatStr.c_str(), arguments...) + 1;
     char line[lineLength + 1];
@@ -326,13 +334,13 @@ private:
 } // namespace ohlog
 
 #define OHLOG ohlog::Logger::get()
-#define DLOG(msg) OHLOG->d(GET_FILENAME, msg)
-#define DLOGA(msg, args...) OHLOG->d(GET_FILENAME, msg, args)
-#define ILOG(msg) OHLOG->i(GET_FILENAME, msg)
-#define ILOGA(msg, args...) OHLOG->i(GET_FILENAME, msg, args)
-#define WLOG(msg) OHLOG->w(GET_FILENAME, msg)
-#define WLOGA(msg, args...) OHLOG->w(GET_FILENAME, msg, args)
-#define ELOG(msg) OHLOG->e(GET_FILENAME, msg)
-#define ELOGA(msg, args...) OHLOG->e(GET_FILENAME, msg, args)
+#define DLOG(msg) OHLOG->d(GET_TAG, msg)
+#define DLOGA(msg, args...) OHLOG->d(GET_TAG, msg, args)
+#define ILOG(msg) OHLOG->i(GET_TAG, msg)
+#define ILOGA(msg, args...) OHLOG->i(GET_TAG, msg, args)
+#define WLOG(msg) OHLOG->w(GET_TAG, msg)
+#define WLOGA(msg, args...) OHLOG->w(GET_TAG, msg, args)
+#define ELOG(msg) OHLOG->e(GET_TAG, msg)
+#define ELOGA(msg, args...) OHLOG->e(GET_TAG, msg, args)
 
 #endif // LOGGER_OHLOG_H
