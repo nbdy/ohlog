@@ -24,3 +24,4 @@ I 2021.09.08 01:01:49 main.cpp: But you could also just pipe the output to a fil
 - [X] Header only
 - [X] Colorized output
 - [X] Shows file name, line and function name
+- [X] CATCH macros for possible exceptions

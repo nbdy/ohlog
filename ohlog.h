@@ -42,12 +42,15 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <chrono>
 
 template <typename T> using SubscribeCallback = std::function<void(const T &)>;
 template <typename T>
 using CallbackMap = std::map<std::string, SubscribeCallback<T>>;
 template <typename T>
 using SubscriptionMap = std::map<std::string, CallbackMap<T>>;
+using Clock = std::chrono::high_resolution_clock;
+using Milliseconds = std::chrono::milliseconds;
 
 constexpr const char* RESET = "\033[0m";
 constexpr const char* BLUE = "\033[34m";
@@ -216,12 +219,14 @@ public:
    * @param format std::string, the format to use
    * @return the current timestamp formatted as a string
    */
-  static std::string
-  getCurrentTimestamp(const std::string &format = DEFAULT_FORMAT) {
+  static std::string getCurrentTimestamp(const std::string &format = DEFAULT_FORMAT) {
     std::stringstream o;
-    const auto t = std::time(nullptr);
-    const auto tm = *std::localtime(&t);
+    const auto t = Clock::now();
+    auto ms = std::chrono::duration_cast<Milliseconds>(t.time_since_epoch()) % 1000;
+    auto time = Clock::to_time_t(t);
+    std::tm tm = *std::localtime(&time);
     o << std::put_time(&tm, format.c_str());
+    o << '.' << std::setfill('0') << std::setw(3) << ms.count();
     return o.str();
   }
 
@@ -342,5 +347,10 @@ private:
 #define WLOGA(msg, args...) OHLOG->w(GET_TAG, msg, args)
 #define ELOG(msg) OHLOG->e(GET_TAG, msg)
 #define ELOGA(msg, args...) OHLOG->e(GET_TAG, msg, args)
+
+#define CATCH(F) try {F();} catch(std::exception &e) {ELOGA("Caught: %s", e.what());}
+#define CATCHA(F, A...) try {F(A...);} catch(std::exception &e) {ELOGA("Caught: %s", e.what());}
+#define CATCHN(F, N) try {F();} catch(std::exception &e) {ELOGA("(%s) Caught: %s", N, e.what());}
+#define CATCHMN(F, M, N) try {F();} catch(std::exception &e) {ELOGA("(%s)(%s) Caught: %s", M, N, e.what());}
 
 #endif // LOGGER_OHLOG_H
